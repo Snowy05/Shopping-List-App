@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:week_3/Model/shopping_item.dart';
 
 class InputForm extends StatefulWidget {
-  const InputForm({super.key});
+  const InputForm({super.key, required this.addItemToList});
+  final Function(ShoppingItem theItem) addItemToList;
+
 
   @override
   State<InputForm> createState() => _InputFormState();
 }
-
 class _InputFormState extends State<InputForm> {
   
   final _itemNameController = TextEditingController();
@@ -29,16 +30,15 @@ class _InputFormState extends State<InputForm> {
     if(_itemNameController.text.trim().isEmpty || finalCost || _theselectedDate == null){
       showDialog(
           context: context,
-          builder: (context)=> AlertDialog(
+          builder: (ctx)=> AlertDialog(
             title:Text('Error Message'),
           content: Text("Please make sure you have filled out valid name, cost and selected a date!"),
             actions: [
-              TextButton(onPressed: (){Navigator.pop(context);}, child: Text("Close"))
+              TextButton(onPressed: (){Navigator.pop(ctx);}, child: Text("Close"))
             ],
-
-          )
-      );
+          ));
     }
+    return;
   }
 
   DateTime? _theselectedDate;
@@ -52,7 +52,19 @@ class _InputFormState extends State<InputForm> {
     setState(() {
       _theselectedDate = _selectedDate;
     });
+
+    if (_selectedDate != null) {
+      widget.addItemToList(ShoppingItem(
+        itemName: _itemNameController.text,
+        itemCost: double.parse(_itemCostController.text),
+        itemCategory: _theselectedCategory!,
+        datePurchased: _selectedDate!,
+      ));
+    }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +115,7 @@ class _InputFormState extends State<InputForm> {
           ),
           Expanded(child: Row(
             children: [
-              TextButton(onPressed: (){}, child: Text("Add details to list")),
+              TextButton(onPressed: _validateUserInput, child: Text("Add details to list")),
               TextButton(onPressed: (){Navigator.pop(context);}, child: Text("Close")),
             ],
           )),

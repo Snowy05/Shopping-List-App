@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:week_3/Model/shopping_item.dart';
+import 'package:week_3/Navigation/navigation_drawer.dart';
 import 'package:week_3/Widgets/input_form.dart';
 import 'package:week_3/Widgets/shopping_list_items.dart';
 
@@ -32,11 +33,16 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         datePurchased: DateTime.now())
   ];
 
+  void _addItemToShoppingList(ShoppingItem item){
+    setState(() {
+      myShoppingList.add(item);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: ShoppingNavigationDrawer(),
       appBar: AppBar(
-
         title: Text('Shopping List App'),
       actions: [IconButton(onPressed: _displayOverlay, icon: Icon(Icons.add))],
       ),
@@ -54,7 +60,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void _displayOverlay(){
     showModalBottomSheet(context: context,
         builder: (ctx)=>
-        InputForm(),
+        InputForm(addItemToList: _addItemToShoppingList,),
     );
   }
 }
